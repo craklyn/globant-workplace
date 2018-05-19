@@ -3,6 +3,8 @@ const fs = require('fs')
 const fr = require('face-recognition')
 const find = require('find-process');
 const glob = require("glob");
+const glob_promise = require("glob-promise");
+//const glob = require("glob-promise");
 const detector = fr.FaceDetector();
 
 const dataPath = path.resolve('./data/faces')
@@ -29,10 +31,10 @@ const trainDataByClass = imagesByClass.map(imgs => imgs.slice(0, numTrainingFace
 const testDataByClass = imagesByClass.map(imgs => imgs.slice(numTrainingFaces))
 */
 
-const sound = require('./sound');
+//const sound = require('./sound');
 
-const name = 'dave';
-sound.playSound(name);
+//const name = 'dave';
+//sound.playSound(name);
 
 
 var peopleSeen = [];
@@ -71,31 +73,34 @@ var init = function() {
     recognizer.load(modelState)
   }
   else {
+    var promises = [];
+
     for(var i = 0; i < names.length; i++) {
       var name = names[i];
       console.log("Now training for person " + name);
 
+      var files = glob_promise.sync("./data/faces/" + name + "*.png");
+
+      var name_copy = name;
       var images = [];
+      for(j = 0; j < files.length; j++) {
+        var file = files[j];
 
-      glob("./data/faces/" + name + "*.png", undefined, function(er, files) {
-        for(j = 0; j < files.length; j++) {
-          var file = files[j];
+        console.log(file);
+        const image = fr.loadImage(file);
+        images.push(image);
+      }
 
-          console.log(file);
-          const image = fr.loadImage(file);
-          images.push(image);
-        }
+      var numJitters = 1;
+      console.log(images.length);
+      console.log(name_copy);
+      recognizer.addFaces(images, name_copy, numJitters);
+    };
 
-        for(var i = 0; i < names.length; i++) {
-          var name = names[i];
-          const numJitters = 15;
-          recognizer.addFaces(images, name, numJitters);
-        }
-      });
 
-      const modelState = recognizer.serialize()
-      fs.writeFileSync('model.json', JSON.stringify(modelState))
-    }
+    const modelState = recognizer.serialize();
+    fs.writeFileSync('model.json', JSON.stringify(modelState));
+
   }
 }
 
