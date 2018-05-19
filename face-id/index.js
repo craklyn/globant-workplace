@@ -29,11 +29,24 @@ const name = 'dave';
 sound.playSound(name);
 
 
+var peopleSeen = [];
+var currentPerson = Undefined;
+var checkImageHistory() {
+  if(peopleSeen.length < 2) {
+    return;
+  }
+
+  if (peopleSeen.last() === peopleSeen[peopleSeen.length - 2])
+    currentPerson = peopleSeen.last();
+}
+
 function mainLoop() {
   // Takes image with webcam
   startImagesnap();
   // Uses image to guess identity
   // Logic to confirm identity (e.g. 2 identifications sequentially)
+  checkImageHistory();
+
   // Respond to identity with playing sound
   // Respond to identity with light
 
