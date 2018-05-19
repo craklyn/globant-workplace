@@ -8,6 +8,8 @@ const classNames = ['sheldon', 'lennard', 'raj', 'howard', 'stuart']
 
 const exec = require('child_process').exec;
 
+var facialRec = require('./asyncFaceRecognition.js');
+console.log(facialRec.SimpleMessage);
 
 /*
 const allFiles = fs.readdirSync(dataPath)
