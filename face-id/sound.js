@@ -1,17 +1,23 @@
-var player = require('play-sound')(opts = {})
+const player = require('play-sound')(opts = {});
+const say = require('say');
 
-var soundMap = {
+const soundMap = {
   andy: 'rain.mp3',
   dave: 'piano.mp3'
 }
 
-var playSound = function (name) {
-  var file = soundMap[name];
-  var audio = player.play('./assets/' + file, function(err){
+const playSound = function (name) {
+  const file = soundMap[name];
+  const audio = player.play('./assets/' + file, function(err){
     if (err) throw err
   });
-  
+
   return audio;
 }
 
+const speak = function (words) {
+  say.speak(words);
+}
+
 exports.playSound = playSound;
+exports.speak = speak;
