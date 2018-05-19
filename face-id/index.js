@@ -22,3 +22,15 @@ const sound = require('./sound');
 
 const name = 'dave';
 sound.playSound(name);
+
+
+function mainLoop() {
+  // Takes image with webcam
+  // Uses image to guess identity
+  // Logic to confirm identity (e.g. 2 identifications sequentially)
+  // Respond to identity with playing sound
+  // Respond to identity with light
+
+}
+
+setInterval(mainLoop, 3000);
