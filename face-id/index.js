@@ -66,29 +66,36 @@ var moveFile = (file, dir2)=>{
 var init = function() {
   const names = ['daniel', 'catherine', 'andy', 'carli'];
 
-  for(var i = 0; i < names.length; i++) {
-    var name = names[i];
-    console.log("Now training for person " + name);
+  if (fs.existsSync(path)) {
+    const modelState = require('model.json')
+    recognizer.load(modelState)
+  }
+  else {
+    for(var i = 0; i < names.length; i++) {
+      var name = names[i];
+      console.log("Now training for person " + name);
 
-    var images = [];
+      var images = [];
 
-    glob("./data/faces/" + name + "*.png", undefined, function(er, files) {
-      for(j = 0; j < files.length; j++) {
-        var file = files[j];
+      glob("./data/faces/" + name + "*.png", undefined, function(er, files) {
+        for(j = 0; j < files.length; j++) {
+          var file = files[j];
 
-        console.log(file);
-        const image = fr.loadImage(file);
-        images.push(image);
-      }
+          console.log(file);
+          const image = fr.loadImage(file);
+          images.push(image);
+        }
 
-      for(var i = 0; i < names.length; i++) {
-        var name = names[i];
-        const numJitters = 1;
-        recognizer.addFaces(images, name, numJitters);
-      }
+        for(var i = 0; i < names.length; i++) {
+          var name = names[i];
+          const numJitters = 15;
+          recognizer.addFaces(images, name, numJitters);
+        }
+      });
 
-
-    });
+      const modelState = recognizer.serialize()
+      fs.writeFileSync('model.json', JSON.stringify(modelState))
+    }
   }
 }
 
@@ -139,8 +146,8 @@ function startImagesnap() {
       console.log('there are %s imagesnap process(es)', list.length);
       if(list.length === 0) {
         console.log("Now executing the following shell command: ");
-        console.log("imagesnap -t 5");
-        exec('imagesnap -t 5');
+        console.log("imagesnap -t 5 -w 2");
+        exec('imagesnap -t 5 -w 2');
       }
   });
 }
