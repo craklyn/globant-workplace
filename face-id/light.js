@@ -12,7 +12,7 @@ const colorMap = {
         "saturation":68,
         "brightness":58,
     },
-    dave: {
+    daniel: {
         "hue":29,
         "saturation":100,
         "brightness":78,
