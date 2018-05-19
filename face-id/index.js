@@ -18,3 +18,7 @@ const trainDataByClass = imagesByClass.map(imgs => imgs.slice(0, numTrainingFace
 const testDataByClass = imagesByClass.map(imgs => imgs.slice(numTrainingFaces))
 
 
+const sound = require('./sound');
+
+const name = 'dave';
+sound.playSound(name);

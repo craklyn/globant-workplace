@@ -6,13 +6,19 @@ const soundMap = {
   dave: 'piano.mp3'
 }
 
+var audio = null;
+
 const playSound = function (name) {
+  if (audio) {
+    audio.kill();
+  }
+
+  speak('Welcome back ' + name);
+
   const file = soundMap[name];
-  const audio = player.play('./assets/' + file, function(err){
+  audio = player.play('./assets/' + file, function(err){
     if (err) throw err
   });
-
-  return audio;
 }
 
 const speak = function (words) {
