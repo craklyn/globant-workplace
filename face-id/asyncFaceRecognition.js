@@ -87,4 +87,9 @@ if (!fs.existsSync(trainedModelFilePath)) {
 }
 
 
+var facial_recognition = function(img) {
+  return undefined;
+}
+
 exports.SimpleMessage = 'Hello world';
+exports.id_face = facial_recognition;

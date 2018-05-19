@@ -12,6 +12,7 @@
     "face-recognition": "^0.9.2",
     "find-process": "^1.1.1",
     "fs": "0.0.1-security",
+    "glob": "^7.1.2",
     "kasa_control": "0.0.8",
     "node-webcam": "^0.4.3",
     "play-sound": "^1.1.2",
