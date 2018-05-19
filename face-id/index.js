@@ -30,8 +30,8 @@ sound.playSound(name);
 
 
 var peopleSeen = [];
-var currentPerson = Undefined;
-var checkImageHistory() {
+var currentPerson = undefined;
+function checkImageHistory() {
   if(peopleSeen.length < 2) {
     return;
   }
