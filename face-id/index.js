@@ -2,15 +2,18 @@ const path = require('path')
 const fs = require('fs')
 const fr = require('face-recognition')
 const find = require('find-process');
-const glob = require("glob")
+const glob = require("glob");
+const detector = fr.FaceDetector();
 
 const dataPath = path.resolve('./data/faces')
 const classNames = ['sheldon', 'lennard', 'raj', 'howard', 'stuart']
 
 const exec = require('child_process').exec;
 
-var facialRec = require('./asyncFaceRecognition.js');
-console.log(facialRec.SimpleMessage);
+const recognizer = fr.FaceRecognizer();
+
+//var facialRec = require('./asyncFaceRecognition.js');
+//console.log(facialRec.SimpleMessage);
 
 /*
 const allFiles = fs.readdirSync(dataPath)
@@ -60,6 +63,35 @@ var moveFile = (file, dir2)=>{
   });
 };
 
+var init = function() {
+  const names = ['daniel', 'catherine', 'andy', 'carli'];
+
+  for(var i = 0; i < names.length; i++) {
+    var name = names[i];
+    console.log("Now training for person " + name);
+
+    var images = [];
+
+    glob("./data/faces/" + name + "*.png", undefined, function(er, files) {
+      for(j = 0; j < files.length; j++) {
+        var file = files[j];
+
+        console.log(file);
+        const image = fr.loadImage(file);
+        images.push(image);
+      }
+
+      for(var i = 0; i < names.length; i++) {
+        var name = names[i];
+        const numJitters = 1;
+        recognizer.addFaces(images, name, numJitters);
+      }
+
+
+    });
+  }
+}
+
 var processNewImage = function() {
 
   // options is optional
@@ -71,6 +103,15 @@ var processNewImage = function() {
     
     var file = files[0];
     console.log(file);
+
+    const image = fr.loadImage(file);
+    const faceImages = detector.detectFaces(image);
+    if(faceImages.length === 1) {
+      const bestPrediction = recognizer.predictBest(faceImages[0]);
+      console.log("Best face prediction: ");
+      console.log(bestPrediction);
+    }
+
     //move file1.htm from 'test/' to 'test/dir_1/'
     moveFile(file, './snapshots/');
 
@@ -104,4 +145,5 @@ function startImagesnap() {
   });
 }
 
+init();
 setInterval(mainLoop, 1000);
