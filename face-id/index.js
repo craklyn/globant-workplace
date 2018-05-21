@@ -31,21 +31,30 @@ const trainDataByClass = imagesByClass.map(imgs => imgs.slice(0, numTrainingFace
 const testDataByClass = imagesByClass.map(imgs => imgs.slice(numTrainingFaces))
 */
 
-//const sound = require('./sound');
-
-//const name = 'dave';
-//sound.playSound(name);
+const sound = require('./sound');
+const light = require('./light');
 
 
 var peopleSeen = [];
 var currentPerson = undefined;
+var previousPerson = undefined;
+
 function checkImageHistory() {
+  console.log(peopleSeen);
+
+  console.log("Debug c");
+
   if(peopleSeen.length < 2) {
+    console.log("Debug b");
     return;
   }
 
-  if (peopleSeen.last() === peopleSeen[peopleSeen.length - 2])
-    currentPerson = peopleSeen.last();
+  if (peopleSeen[peopleSeen.length-1] == peopleSeen[peopleSeen.length - 2]) {
+    previousPerson = currentPerson;
+    currentPerson = peopleSeen[peopleSeen.length-1];
+    console.log("Debug a");
+  }
+  console.log("Debug d");
 }
 
 
@@ -68,11 +77,14 @@ var moveFile = (file, dir2)=>{
 var init = function() {
   const names = ['daniel', 'catherine', 'andy', 'carli'];
 
-  if (fs.existsSync(path)) {
+/*
+  if (fs.existsSync("./model.json")) {
+    console.log("Loading model");
     const modelState = require('model.json')
     recognizer.load(modelState)
   }
   else {
+*/
     var promises = [];
 
     for(var i = 0; i < names.length; i++) {
@@ -91,17 +103,21 @@ var init = function() {
         images.push(image);
       }
 
-      var numJitters = 1;
+      var numJitters = 15;
       console.log(images.length);
       console.log(name_copy);
       recognizer.addFaces(images, name_copy, numJitters);
     };
 
-
+    console.log("saving model");
     const modelState = recognizer.serialize();
     fs.writeFileSync('model.json', JSON.stringify(modelState));
-
+/*
   }
+*/
+
+  console.log("Opening imagesnap");
+  exec('imagesnap -t 5 -w 2');
 }
 
 var processNewImage = function() {
@@ -122,6 +138,7 @@ var processNewImage = function() {
       const bestPrediction = recognizer.predictBest(faceImages[0]);
       console.log("Best face prediction: ");
       console.log(bestPrediction);
+      peopleSeen.push(bestPrediction.className);
     }
 
     //move file1.htm from 'test/' to 'test/dir_1/'
@@ -142,6 +159,11 @@ function mainLoop() {
 
   // Respond to identity with playing sound
   // Respond to identity with light
+  console.log("Current person: " + currentPerson);
+  if(currentPerson && currentPerson != previousPerson) {
+    sound.playSound(currentPerson);
+    light.changeColor(currentPerson);
+  }
 
 }
 
@@ -152,7 +174,7 @@ function startImagesnap() {
       if(list.length === 0) {
         console.log("Now executing the following shell command: ");
         console.log("imagesnap -t 5 -w 2");
-        exec('imagesnap -t 5 -w 2');
+//        exec('imagesnap -t 5 -w 2');
       }
   });
 }

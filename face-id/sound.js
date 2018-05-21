@@ -3,7 +3,9 @@ const say = require('say');
 
 const soundMap = {
   andy: 'rain.mp3',
-  daniel: 'piano.mp3'
+  daniel: 'piano.mp3',
+  catherine: 'piano.mp3',
+  carli: 'piano.mp3'
 }
 
 var audio = null;

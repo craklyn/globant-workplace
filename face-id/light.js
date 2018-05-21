@@ -17,7 +17,19 @@ const colorMap = {
         "hue":29,
         "saturation":100,
         "brightness":78,
-        "color_temp": 1000
+        "color_temp": 9000
+    },
+    carli: {
+        "hue":129,
+        "saturation":40,
+        "brightness":28,
+        "color_temp": 2000
+    },
+    catherine: {
+        "hue":300,
+        "saturation":500,
+        "brightness":8,
+        "color_temp": 3000
     }
 }
 
