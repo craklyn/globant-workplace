@@ -13,6 +13,8 @@ const classNames = ['sheldon', 'lennard', 'raj', 'howard', 'stuart']
 const exec = require('child_process').exec;
 
 const recognizer = fr.FaceRecognizer();
+const win = new fr.ImageWindow()
+const predictor = fr.FaceLandmark68Predictor()
 
 //var facialRec = require('./asyncFaceRecognition.js');
 //console.log(facialRec.SimpleMessage);
@@ -77,14 +79,12 @@ var moveFile = (file, dir2)=>{
 var init = function() {
   const names = ['daniel', 'catherine', 'andy', 'carli'];
 
-/*
   if (fs.existsSync("./model.json")) {
     console.log("Loading model");
-    const modelState = require('model.json')
+    const modelState = require('./model.json')
     recognizer.load(modelState)
   }
   else {
-*/
     var promises = [];
 
     for(var i = 0; i < names.length; i++) {
@@ -103,7 +103,7 @@ var init = function() {
         images.push(image);
       }
 
-      var numJitters = 15;
+      var numJitters = 1;
       console.log(images.length);
       console.log(name_copy);
       recognizer.addFaces(images, name_copy, numJitters);
@@ -112,12 +112,10 @@ var init = function() {
     console.log("saving model");
     const modelState = recognizer.serialize();
     fs.writeFileSync('model.json', JSON.stringify(modelState));
-/*
   }
-*/
 
   console.log("Opening imagesnap");
-  exec('imagesnap -t 5 -w 2');
+  startImagesnap();
 }
 
 var processNewImage = function() {
@@ -134,12 +132,21 @@ var processNewImage = function() {
 
     const image = fr.loadImage(file);
     const faceImages = detector.detectFaces(image);
-    if(faceImages.length === 1) {
+//    if(faceImages.length === 1) {
       const bestPrediction = recognizer.predictBest(faceImages[0]);
       console.log("Best face prediction: ");
       console.log(bestPrediction);
       peopleSeen.push(bestPrediction.className);
-    }
+
+      // Debug 1
+      win.setImage(image)
+//      const faceRectangles = detector.locateFaces(image);
+//      const shapes = faceRectangles.map(rect => predictor.predict(image, rect));
+      const temp_detector = new fr.FrontalFaceDetector()
+      const faceRects = temp_detector.detect(image);
+      const shapes = faceRects.map(rect => predictor.predict(image, rect));
+      win.renderFaceDetections(shapes);
+//    }
 
     //move file1.htm from 'test/' to 'test/dir_1/'
     moveFile(file, './snapshots/');
@@ -174,7 +181,7 @@ function startImagesnap() {
       if(list.length === 0) {
         console.log("Now executing the following shell command: ");
         console.log("imagesnap -t 5 -w 2");
-//        exec('imagesnap -t 5 -w 2');
+        exec('imagesnap -t 5 -w 2');
       }
   });
 }
